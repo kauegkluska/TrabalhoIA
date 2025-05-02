@@ -1,1 +1,1 @@
-from experta import *;
+print("somethihng")

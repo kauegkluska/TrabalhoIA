@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LLM Chat</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <h1>Chat with LLM</h1>
+  <form id="chat-form">
+    <input type="text" id="message" placeholder="Say something..." />
+    <button type="submit">Send</button>
+  </form>
+  <div id="chat-response"></div>
+
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
