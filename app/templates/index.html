@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>LLM Chat</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Idk What Im doing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-  <h1>Chat with LLM</h1>
-  <form id="chat-form">
-    <input type="text" id="message" placeholder="Say something..." />
-    <button type="submit">Send</button>
-  </form>
-  <div id="chat-response"></div>
-
-  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <h1>Nome</h1>
+    
+    <div id="response"></div>
+   
+    <form id="chat-form">
+        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" aria-label="Type your message here" />
+        <button type="submit" aria-label="Send message">Send</button>
+    </form>
+    
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>
