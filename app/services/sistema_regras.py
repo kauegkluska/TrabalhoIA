@@ -24,6 +24,8 @@ class SistemaManutencao(KnowledgeEngine):
     @Rule(Sintoma(desc='superaquecendo'))
     def regra_aquecimento(self):
         self.resposta = "Limpe as ventoinhas e verifique se o cooler está funcionando."
+        
+
 
 def evaluate_rules(mensagem):
     engine = SistemaManutencao()
