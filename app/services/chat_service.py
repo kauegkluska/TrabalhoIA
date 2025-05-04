@@ -1,7 +1,7 @@
 from app.services.sistema_regras import evaluate_rules
 from openai import OpenAI
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="chave")
 
 def get_chat_response(message):
     system_prompt = (
