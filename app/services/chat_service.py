@@ -1,7 +1,24 @@
 from app.services.sistema_regras import evaluate_rules
+from openai import OpenAI
+
+client = OpenAI(api_key="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")
 
 def get_chat_response(message):
-    expert_answer = evaluate_rules(message)
-    if expert_answer:
-        return expert_answer
-    return "Desculpe, não entendi. Pode reformular?"
+    system_prompt = (
+    "Você é um assistente que transforma sintomas descritos em linguagem natural "
+    "em fatos no formato sintoma('nome_do_sintoma') para um sistema especialista de manutenção de computadores. "
+    "A lista de sintomas válidos inclui: "
+    "'tela_preta', 'sem_sinal', 'barulho_hd', 'nao_liga', 'reinicia', 'tela_azul', 'superaquecimento', 'travando', 'lentidao', 'erro_bios'. "
+    "Só utilize sintomas dessa lista. Se não identificar nenhum, responda sintoma('nenhum')."
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": message}
+        ]
+    )
+
+    fatos_extraidos = response.choices[0].message.content
+    return evaluate_rules(fatos_extraidos)
