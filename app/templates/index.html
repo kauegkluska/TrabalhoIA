@@ -5,13 +5,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Nome</h1>
-    
+    <h1>IntelliFIX</h1>
     <div id="response"></div>
    
     <form id="chat-form">
-        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" aria-label="Type your message here" />
-        <button type="submit" aria-label="Send message">Send</button>
+        <input type="text" id="message" placeholder="Digite uma mensagem" autocomplete="off" aria-label="Type your message here" />
+        <button type="submit" aria-label="Send message">Enviar</button>
     </form>
     
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
