@@ -19,7 +19,7 @@ python -m venv venv
 - No Windows:
 
 ```bash
-.env\Scriptsctivate
+.\env\Scripts\ctivate
 ```
 
 - No macOS/Linux:
