@@ -1,8 +1,6 @@
 
 # README
 
-## 1 - Versão utilizada
-
 Este projeto foi desenvolvido utilizando **Python 3.9**.  
 Certifique-se de ter o Python 3.9 instalado em seu sistema. Caso ainda não tenha, baixe e instale a versão correta no [site oficial do Python](https://www.python.org/downloads/release/python-390/).
 
