@@ -95,6 +95,19 @@ class SistemaRegras(KnowledgeEngine):
     @Rule(Sintoma(bip_asus_continuo=True))
     def asus_power(self):
         self.diagnostico_final = "Problema de fonte de alimentação (ASUS)"
+    #Regras Colorful
+    @Rule(Sintoma(bip_colorful_1_longo_2_curtos=True))
+    def colorful_placadevideo(self):
+        self.diagnostico_final = "Erro na Placa de video ou na BIOS da placa de video"
+
+    @Rule(Sintoma(bip_colorful_1_longo_3_curtos=True))
+    def colorful_placadevideo(self):
+        self.diagnostico_final = "Problema no slot AGP ou Placa de video"
+
+    @Rule(Sintoma(bip_colorful_3_longo=True))
+    def colorful_memoriaram(self):
+        self.diagnostico_final = "Falha na memoria ram"
+        
 
     def run_with_facts(self, fatos_dict):
         self.reset()
