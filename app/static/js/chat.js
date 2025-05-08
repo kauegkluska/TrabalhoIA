@@ -8,18 +8,23 @@ form.addEventListener("submit", async (e) => {
   if (!userMessage) return;
 
   addMessage(userMessage, "user-msg");
-
   input.value = "";
 
+  // Adiciona indicador de digitação
+  const typingIndicator = addTypingIndicator();
+
+  // Envia a mensagem ao backend
   const res = await fetch("/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: userMessage }),
   });
 
-  const data = await res.json();
-  const botReply = data.response || "Something went wrong.";
+  // Remove o indicador de digitação
+  responseDiv.removeChild(typingIndicator);
 
+  const data = await res.json();
+  const botReply = data.response || "Algo deu errado.";
   addMessage(botReply, "bot-msg");
 });
 
@@ -29,4 +34,18 @@ function addMessage(text, className) {
   msg.textContent = text;
   responseDiv.appendChild(msg);
   responseDiv.scrollTop = responseDiv.scrollHeight;
+}
+
+function addTypingIndicator() {
+  const typingDiv = document.createElement("div");
+  typingDiv.className = "typing-indicator";
+  typingDiv.innerHTML = `
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <span class="typing-text">Digitando...</span>
+  `;
+  responseDiv.appendChild(typingDiv);
+  responseDiv.scrollTop = responseDiv.scrollHeight;
+  return typingDiv;
 }
