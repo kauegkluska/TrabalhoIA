@@ -11,6 +11,8 @@ SINTOMAS_VALIDOS = [
     'bip_gigabyte_1_longo_2_curto', 'bip_gigabyte_1_longo_3_curto', 'bip_gigabyte_continuo',
     # Beeps ASUS
     'bip_asus_1_curto', 'bip_asus_2_curto', 'bip_asus_3_curto', 'bip_asus_continuo'
+    # Beeps Colorful
+    'bip_colorful_1_longo_2_curtos', 'bip_colorful_1_longo_3_curtos' , 'bip_colorful_3_longo','bip_colorful_5_longo','bip_colorful_ausente'
 ]
 
 class Sintoma(Fact):
@@ -107,6 +109,15 @@ class SistemaRegras(KnowledgeEngine):
     @Rule(Sintoma(bip_colorful_3_longo=True))
     def colorful_memoriaram(self):
         self.diagnostico_final = "Falha na memoria ram"
+    
+    @Rule(Sintoma(bip_colorful_5_longo=True))
+    def colorful_processador(self):
+        self.diagnostico_final = "Falha no processador"
+
+    @Rule(Sintoma(bip_colorful_ausente=True))
+    def colorful_placa_mae_fonte(self):
+        self.diagnostico_final = "Falha na placa mãe ou fonte"
+
         
 
     def run_with_facts(self, fatos_dict):
