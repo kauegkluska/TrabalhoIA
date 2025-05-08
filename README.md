@@ -14,7 +14,6 @@ Certifique-se de ter o Python 3.9 instalado em seu sistema. Caso ainda não tenh
 
 ```bash
 git clone https://github.com/kauegkluska/TrabalhoIA.git
-cd TrabalhoIA
 ```
 
 #### 2. Verifique se o Python 3.9 está instalado
