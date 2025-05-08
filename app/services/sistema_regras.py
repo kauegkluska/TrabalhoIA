@@ -1,10 +1,16 @@
 from experta import *
 
-# Lista de sintomas válidos
+# Lista de sintomas válidos, incluindo códigos de bips para ASRock, Gigabyte e ASUS
 SINTOMAS_VALIDOS = [
     'nao_liga', 'sem_som_ou_luz', 'ventoinhas_paradas',
     'tela_azul', 'travamentos', 'reinicializacao_inesperada',
-    'lentidao', 'arquivos_corrompidos', 'erros_leitura_gravacao', 'aquecimento'
+    'lentidao', 'arquivos_corrompidos', 'erros_leitura_gravacao', 'aquecimento',
+    # Beeps ASRock
+    'bip_asrock_1_curto', 'bip_asrock_2_curto', 'bip_asrock_3_curto', 'bip_asrock_continuo',
+    # Beeps Gigabyte
+    'bip_gigabyte_1_longo_2_curto', 'bip_gigabyte_1_longo_3_curto', 'bip_gigabyte_continuo',
+    # Beeps ASUS
+    'bip_asus_1_curto', 'bip_asus_2_curto', 'bip_asus_3_curto', 'bip_asus_continuo'
 ]
 
 class Sintoma(Fact):
@@ -22,6 +28,7 @@ class SistemaRegras(KnowledgeEngine):
         self.diagnostico_final = None
         self.fatos_relevantes = []
 
+    # Regras existentes
     @Rule(Sintoma(nao_liga=True), Sintoma(ventoinhas_paradas=True))
     def fonte_alimentacao(self):
         self.diagnostico_final = "Fonte de alimentação com defeito"
@@ -41,7 +48,53 @@ class SistemaRegras(KnowledgeEngine):
     @Rule(Sintoma(nao_liga=True), Sintoma(sem_som_ou_luz=True))
     def placa_mae(self):
         self.diagnostico_final = "Problema na placa-mãe"
-    
+
+    # Regras para beeps ASRock
+    @Rule(Sintoma(bip_asrock_1_curto=True))
+    def asrock_dram_refresh(self):
+        self.diagnostico_final = "Falha de renovação DRAM (ASRock)"
+
+    @Rule(Sintoma(bip_asrock_2_curto=True))
+    def asrock_parity(self):
+        self.diagnostico_final = "Falha de circuito de paridade (ASRock)"
+
+    @Rule(Sintoma(bip_asrock_3_curto=True))
+    def asrock_ram_64k(self):
+        self.diagnostico_final = "Falha de 64K de RAM base (ASRock)"
+
+    @Rule(Sintoma(bip_asrock_continuo=True))
+    def asrock_power(self):
+        self.diagnostico_final = "Problema de fonte ou placa-mãe (ASRock)"
+
+    # Regras para beeps Gigabyte
+    @Rule(Sintoma(bip_gigabyte_1_longo_2_curto=True))
+    def gigabyte_vga(self):
+        self.diagnostico_final = "Falha de placa de vídeo (Gigabyte)"
+
+    @Rule(Sintoma(bip_gigabyte_1_longo_3_curto=True))
+    def gigabyte_memory(self):
+        self.diagnostico_final = "Falha de memória (Gigabyte)"
+
+    @Rule(Sintoma(bip_gigabyte_continuo=True))
+    def gigabyte_power(self):
+        self.diagnostico_final = "Erro de energia ou placa-mãe (Gigabyte)"
+
+    # Regras para beeps ASUS
+    @Rule(Sintoma(bip_asus_1_curto=True))
+    def asus_normal(self):
+        self.diagnostico_final = "Inicialização bem-sucedida (ASUS)"
+
+    @Rule(Sintoma(bip_asus_2_curto=True))
+    def asus_ram(self):
+        self.diagnostico_final = "Erro de memória RAM (ASUS)"
+
+    @Rule(Sintoma(bip_asus_3_curto=True))
+    def asus_vga(self):
+        self.diagnostico_final = "Falha de placa de vídeo (ASUS)"
+
+    @Rule(Sintoma(bip_asus_continuo=True))
+    def asus_power(self):
+        self.diagnostico_final = "Problema de fonte de alimentação (ASUS)"
 
     def run_with_facts(self, fatos_dict):
         self.reset()
@@ -68,10 +121,9 @@ class SistemaRegras(KnowledgeEngine):
 
         for regra in regras_sintomas:
             faltam = regra - fornecidos
-            if len(faltam) == 1:  
+            if len(faltam) == 1:
                 sintomas_faltando.update(faltam)
         return list(sintomas_faltando)
-
 
 # Funções públicas para integração
 
