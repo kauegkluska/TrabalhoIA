@@ -31,7 +31,7 @@ py -3.9 -m venv venv
 - No Windows:
 
 ```bash
-.\venv\Scripts\ctivate
+.\venv\Scripts\activate
 ```
 
 Se a ativação for bem-sucedida, aparecerá `(venv)` antes da linha de comando.
