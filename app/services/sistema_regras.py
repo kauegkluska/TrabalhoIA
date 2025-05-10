@@ -1,30 +1,53 @@
 from experta import *
 
-# Lista de sintomas válidos, incluindo códigos de bips para ASRock, Gigabyte e ASUS e Colorful
 SINTOMAS_VALIDOS = [
-    # Sintomas genéricos
     'nao_liga', 'sem_som_ou_luz', 'ventoinhas_paradas',
     'tela_azul', 'travamentos', 'reinicializacao_inesperada',
     'lentidao', 'arquivos_corrompidos', 'erros_leitura_gravacao', 'aquecimento',
-    # Beeps ASRock (1 curto, 2 curtos, 3 curtos, contínuo)
     'bip_asrock_1_curto', 'bip_asrock_2_curtos', 'bip_asrock_3_curtos', 'bip_asrock_continuo',
-    # Beeps Gigabyte (1 longo + X curtos, contínuo)
     'bip_gigabyte_1_longo_2_curtos', 'bip_gigabyte_1_longo_3_curtos', 'bip_gigabyte_continuo',
-    # Beeps ASUS (1 curto, 2 curtos, 3 curtos, contínuo)
     'bip_asus_1_curto', 'bip_asus_2_curtos', 'bip_asus_3_curtos', 'bip_asus_continuo',
-    # Beeps Colorful (1 longo + X curtos, múltiplos longos, sem bip)
     'bip_colorful_1_longo_2_curtos', 'bip_colorful_1_longo_3_curtos',
     'bip_colorful_3_longos', 'bip_colorful_5_longos', 'bip_colorful_ausente'
+]
+
+TIPOS_COMPUTADOR = ['tipo_computador("notebook")', 'tipo_computador("pc")']
+    
+MODELOS_VALIDOS = [
+    'modelo("asus")', 'modelo("asrock")', 'modelo("gigabyte")', 'modelo("colorful")'
+]
+
+SINTOMAS_BEEP = [
+    s for s in SINTOMAS_VALIDOS if s.startswith("bip_")
+]
+
+SINTOMAS_GENERICOS = [
+    f"sintoma('{s}')" for s in SINTOMAS_VALIDOS if not s.startswith("bip_")
+]
+
+MODELOS_NOTEBOOK = [
+    'Dell', 'Lenovo', 'Acer', 'HP', 'Samsung', 'vaio'
 ]
 
 class Sintoma(Fact):
     """Fato representando um sintoma do computador."""
     pass
 
+class Modelo_placa_mae(Fact):
+    """Fato representando o modelo da placa mãe."""
+    pass
+
+class Modelo_notebook(Fact):
+    """Fato representando o modelo do notebook."""
+    pass
+
+class Tipo_computador(Fact):
+    """Fato representando o tipo de computador."""
+    pass
+
 class SistemaRegras(KnowledgeEngine):
     def __init__(self):
         super().__init__()
-        # Lista para armazenar múltiplos diagnósticos
         self.diagnosticos = []
         self.fatos_relevantes = []
 
@@ -33,7 +56,7 @@ class SistemaRegras(KnowledgeEngine):
         self.diagnosticos = []
         self.fatos_relevantes = []
 
-    # ----- Regras base (necessitam de pares de sintomas) -----
+    # ----- Regras com sintomas genéricos -----
     @Rule(Sintoma(nao_liga=True), Sintoma(ventoinhas_paradas=True))
     def fonte_alimentacao(self):
         self.diagnosticos.append("Fonte de alimentação com defeito")
@@ -54,104 +77,56 @@ class SistemaRegras(KnowledgeEngine):
     def placa_mae(self):
         self.diagnosticos.append("Problema na placa-mãe")
 
-    # ----- Regras de bips ASRock -----
-    @Rule(Sintoma(bip_asrock_1_curto=True))
+    # ----- Regras específicas para placas-mãe -----
+    @Rule(Sintoma(bip_asrock_1_curto=True), Modelo_placa_mae(modelo='ASRock'))
     def asrock_dram_refresh(self):
         self.diagnosticos.append("Falha de renovação DRAM (ASRock)")
 
-    @Rule(Sintoma(bip_asrock_2_curtos=True))
+    @Rule(Sintoma(bip_asrock_2_curtos=True), Modelo_placa_mae(modelo='ASRock'))
     def asrock_parity(self):
         self.diagnosticos.append("Falha de circuito de paridade (ASRock)")
 
-    @Rule(Sintoma(bip_asrock_3_curtos=True))
+    @Rule(Sintoma(bip_asrock_3_curtos=True), Modelo_placa_mae(modelo='ASRock'))
     def asrock_ram_64k(self):
         self.diagnosticos.append("Falha de 64K de RAM base (ASRock)")
 
-    @Rule(Sintoma(bip_asrock_continuo=True))
+    @Rule(Sintoma(bip_asrock_continuo=True), Modelo_placa_mae(modelo='ASRock'))
     def asrock_power(self):
         self.diagnosticos.append("Problema de fonte ou placa-mãe (ASRock)")
 
-    # ----- Regras de bips Gigabyte -----
-    @Rule(Sintoma(bip_gigabyte_1_longo_2_curtos=True))
-    def gigabyte_vga(self):
-        self.diagnosticos.append("Falha de placa de vídeo (Gigabyte)")
-
-    @Rule(Sintoma(bip_gigabyte_1_longo_3_curtos=True))
-    def gigabyte_memory(self):
-        self.diagnosticos.append("Falha de memória (Gigabyte)")
-
-    @Rule(Sintoma(bip_gigabyte_continuo=True))
-    def gigabyte_power(self):
-        self.diagnosticos.append("Erro de energia ou placa-mãe (Gigabyte)")
-
-    # ----- Regras de bips ASUS -----
-    @Rule(Sintoma(bip_asus_1_curto=True))
-    def asus_normal(self):
-        self.diagnosticos.append("Inicialização bem-sucedida (ASUS)")
-
-    @Rule(Sintoma(bip_asus_2_curtos=True))
-    def asus_ram(self):
-        self.diagnosticos.append("Erro de memória RAM (ASUS)")
-
-    @Rule(Sintoma(bip_asus_3_curtos=True))
-    def asus_vga(self):
-        self.diagnosticos.append("Falha de placa de vídeo (ASUS)")
-
-    @Rule(Sintoma(bip_asus_continuo=True))
-    def asus_power(self):
-        self.diagnosticos.append("Problema de fonte de alimentação (ASUS)")
-
-    # ----- Regras de bips Colorful -----
-    @Rule(Sintoma(bip_colorful_1_longo_2_curtos=True))
-    def colorful_erro_video(self):
-        self.diagnosticos.append("Erro na placa de vídeo ou BIOS (Colorful)")
-
-    @Rule(Sintoma(bip_colorful_1_longo_3_curtos=True))
-    def colorful_problema_agp(self):
-        self.diagnosticos.append("Problema no slot AGP ou placa de vídeo (Colorful)")
-
-    @Rule(Sintoma(bip_colorful_3_longos=True))
-    def colorful_memoria_ram(self):
-        self.diagnosticos.append("Falha na memória RAM (Colorful)")
-
-    @Rule(Sintoma(bip_colorful_5_longos=True))
-    def colorful_processador(self):
-        self.diagnosticos.append("Falha no processador (Colorful)")
-
-    @Rule(Sintoma(bip_colorful_ausente=True))
-    def colorful_placa_mae_fonte(self):
-        self.diagnosticos.append("Falha na placa-mãe ou fonte (Colorful)")
-
-    @Rule(Sintoma(bateria_nao_carrega=True))
+    # ----- Regras para notebooks -----
+    @Rule(Sintoma(bateria_nao_carrega=True), Tipo_computador(tipo='notebook'))
     def defeito_bateria(self):
         self.diagnosticos.append("Bateria com defeito ou conector de carga ruim")
 
-    @Rule(Sintoma(bateria_dura_pouco=True), Sintoma(aquecimento=True))
+    @Rule(Sintoma(bateria_dura_pouco=True), Sintoma(aquecimento=True), Tipo_computador(tipo='notebook'))
     def aquecimento_afeta_bateria(self):
         self.diagnosticos.append("Superaquecimento reduz capacidade da bateria")
 
-    @Rule(Sintoma(tela_nao_acende=True), Sintoma(sem_som_ou_luz=True))
+    @Rule(Sintoma(tela_nao_acende=True), Sintoma(sem_som_ou_luz=True), Tipo_computador(tipo='notebook'))
     def problema_backlight(self):
         self.diagnosticos.append("Inverter ou backlight da tela com defeito")
 
-    @Rule(Sintoma(teclado_nao_responde=True))
+    @Rule(Sintoma(teclado_nao_responde=True), Tipo_computador(tipo='notebook'))
     def defeito_teclado(self):
         self.diagnosticos.append("Falha no teclado – possível mau contato ou driver")
 
-    @Rule(Sintoma(computador_desliga_quando_joga=True))
+    @Rule(Sintoma(computador_desliga_quando_joga=True), Tipo_computador(tipo='notebook'))
     def troca_pastatermica(self):
         self.diagnosticos.append("Fazer limpeza do notebook e troca da pasta térmica")
-        
-
 
     def run_with_facts(self, fatos_dict):
-        """
-        Executa o motor com fatos fornecidos e retorna lista de diagnósticos ou None.
-        """
         self.reset()
         self.fatos_relevantes = fatos_dict
-        for sintoma in fatos_dict:
-            self.declare(Sintoma(**{sintoma: True}))
+        for chave, valor in fatos_dict.items():
+            if chave in SINTOMAS_VALIDOS:
+                self.declare(Sintoma(**{chave: True}))
+            elif chave in MODELOS_PLACA_MAE:
+                self.declare(Modelo_placa_mae(modelo=chave))
+            elif chave in MODELOS_NOTEBOOK:
+                self.declare(Modelo_notebook(modelo=chave))
+            elif chave in TIPOS_DE_COMPUTADOR:
+                self.declare(Tipo_computador(tipo=chave))
         self.run()
         return self.diagnosticos if self.diagnosticos else None
 
@@ -164,7 +139,29 @@ class SistemaRegras(KnowledgeEngine):
             {'tela_azul', 'reinicializacao_inesperada'},
             {'lentidao', 'erros_leitura_gravacao'},
             {'travamentos', 'aquecimento'},
-            {'nao_liga', 'sem_som_ou_luz'}
+            {'nao_liga', 'sem_som_ou_luz'},
+            {'bateria_dura_pouco', 'aquecimento'},
+            {'tela_nao_acende', 'sem_som_ou_luz'},
+            {'bip_asrock_1_curto'},
+            {'bip_asrock_2_curtos'},
+            {'bip_asrock_3_curtos'},
+            {'bip_asrock_continuo'},
+            {'bip_gigabyte_1_longo_2_curtos'},
+            {'bip_gigabyte_1_longo_3_curtos'},
+            {'bip_gigabyte_continuo'},
+            {'bip_asus_1_curto'},
+            {'bip_asus_2_curtos'},
+            {'bip_asus_3_curtos'},
+            {'bip_asus_continuo'},
+            {'bip_colorful_1_longo_2_curtos'},
+            {'bip_colorful_1_longo_3_curtos'},
+            {'bip_colorful_3_longos'},
+            {'bip_colorful_5_longos'},
+            {'bip_colorful_ausente'},
+            {'bateria_nao_carrega'},
+            {'tela_nao_acende', 'sem_som_ou_luz'},
+            {'teclado_nao_responde'},
+            {'computador_desliga_quando_joga'}
         ]
         fornecidos = set(self.fatos_relevantes.keys())
         faltando = set()
@@ -173,8 +170,7 @@ class SistemaRegras(KnowledgeEngine):
             if len(diff) == 1:
                 faltando.update(diff)
         return list(faltando)
-
-# Funções públicas para integração
+        
 
 def evaluate_rules(fatos_lista):
     """
@@ -191,16 +187,17 @@ def evaluate_rules(fatos_lista):
     return engine.run_with_facts(fatos_dict)
 
 
-def get_missing_symptoms(fatos_lista):
-    """
-    Retorna sintomas genéricos que ainda faltam para formar pares diagnósticos.
-    """
-    fatos_dict = {}
-    for fato in fatos_lista:
-        if "sintoma(" in fato:
-            nome = fato.replace("sintoma(", "").replace(")", "").replace("'", "").strip()
-            if nome in SINTOMAS_VALIDOS:
-                fatos_dict[nome] = True
-    engine = SistemaRegras()
-    engine.run_with_facts(fatos_dict)
-    return engine.sintomas_necessarios()
+def get_missing_symptoms(fatos):
+    if not any(fato.startswith("tipo_computador(") for fato in fatos):
+        return TIPOS_COMPUTADOR
+
+    if not any(fato.startswith("modelo(") for fato in fatos):
+        return MODELOS_VALIDOS
+
+    if not any(fato.startswith("sintoma('bip_") for fato in fatos):
+        return [f"sintoma('{s}')" for s in SINTOMAS_BEEP]
+
+    sintomas_presentes = set(fato for fato in fatos if fato.startswith("sintoma("))
+    sintomas_faltando = [s for s in SINTOMAS_GENERICOS if s not in sintomas_presentes]
+
+    return sintomas_faltando
