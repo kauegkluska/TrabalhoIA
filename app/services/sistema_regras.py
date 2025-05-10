@@ -122,6 +122,28 @@ class SistemaRegras(KnowledgeEngine):
     def colorful_placa_mae_fonte(self):
         self.diagnosticos.append("Falha na placa-mãe ou fonte (Colorful)")
 
+    @Rule(Sintoma(bateria_nao_carrega=True))
+    def defeito_bateria(self):
+        self.diagnosticos.append("Bateria com defeito ou conector de carga ruim")
+
+    @Rule(Sintoma(bateria_dura_pouco=True), Sintoma(aquecimento=True))
+    def aquecimento_afeta_bateria(self):
+        self.diagnosticos.append("Superaquecimento reduz capacidade da bateria")
+
+    @Rule(Sintoma(tela_nao_acende=True), Sintoma(sem_som_ou_luz=True))
+    def problema_backlight(self):
+        self.diagnosticos.append("Inverter ou backlight da tela com defeito")
+
+    @Rule(Sintoma(teclado_nao_responde=True))
+    def defeito_teclado(self):
+        self.diagnosticos.append("Falha no teclado – possível mau contato ou driver")
+
+    @Rule(Sintoma(computador_desliga_quando_joga=True))
+    def troca_pastatermica(self):
+        self.diagnosticos.append("Fazer limpeza do notebook e troca da pasta térmica")
+        
+
+
     def run_with_facts(self, fatos_dict):
         """
         Executa o motor com fatos fornecidos e retorna lista de diagnósticos ou None.
