@@ -49,3 +49,30 @@ function addTypingIndicator() {
   responseDiv.scrollTop = responseDiv.scrollHeight;
   return typingDiv;
 }
+
+// Exibir/ocultar dúvidas frequentes
+document.getElementById('toggle-faq').onclick = () => {
+    document.getElementById('faq-section').classList.toggle('hidden');
+};
+
+// Inserir texto de dúvida no campo de mensagem
+function insertFAQ(texto) {
+    document.getElementById('message').value = texto;
+    document.getElementById('message').focus();
+}
+
+// Voltar à tela inicial
+document.getElementById('go-home').onclick = () => {
+    window.location.href = "/";
+};
+
+
+// Envia a mensagem de duvidas frequentes automaticamente
+/*document.querySelectorAll(".faq li").forEach((item) => {
+  item.addEventListener("click", () => {
+    const faqQuestion = item.textContent.trim();
+    input.value = faqQuestion;
+    form.dispatchEvent(new Event("submit")); // Envia como se fosse uma mensagem
+  });
+});
+*/

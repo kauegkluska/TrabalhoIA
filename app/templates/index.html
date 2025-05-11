@@ -1,18 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>IntelliFIX</title>
+    <meta charset="UTF-8">
+    <title>Nexar</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <h1>IntelliFIX</h1>
-    <div id="response"></div>
-   
-    <form id="chat-form">
-        <input type="text" id="message" placeholder="Digite uma mensagem" autocomplete="off" aria-label="Type your message here" />
-        <button type="submit" aria-label="Send message">Enviar</button>
-    </form>
-    
+
+    <!-- Barra superior -->
+    <header class="top-bar">
+        <h1>Nexar</h1>
+        <div class="nav-buttons">
+            <button id="toggle-faq" title="Dúvidas Frequentes">❓</button>
+            <button id="go-home" title="Início">🏠</button>
+        </div>
+    </header>
+
+    <!-- chat -->
+    <main class="chat-container">
+
+        <!-- Dúvidas frequentes -->
+        <aside id="faq-section" class="faq hidden">
+            <h2>Dúvidas Frequentes</h2>
+            <ul>
+                <li onclick="insertFAQ('Tela azul')">💻 Tela azul</li>
+                <li onclick="insertFAQ('Computador travando')">🐢 Computador travando</li>
+                <li onclick="insertFAQ('Superaquecimento')">🔥 Superaquecimento</li>
+                <li onclick="insertFAQ('Programas não abrem')">❌ Programas não abrem</li>
+                <li onclick="insertFAQ('Sem internet')">🌐 Sem internet</li>
+            </ul>
+        </aside>
+
+        <section id="response" class="chat-box"></section>
+
+    </main>
+
+    <!-- Rodapé fixo ] -->
+    <footer class="chat-footer">
+        <form id="chat-form">
+            <input type="text" id="message" placeholder="Digite uma mensagem..." autocomplete="off" />
+            <button type="submit">Enviar</button>
+        </form>
+    </footer>
+
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
 </body>
 </html>
+
