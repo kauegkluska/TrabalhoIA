@@ -1,8 +1,14 @@
 from app.services.sistema_regras import evaluate_rules, get_missing_symptoms
 from openai import OpenAI
+import os
+from dotenv import load_dotenv
 
-# Inicializa o cliente da OpenAI com a chave de API
-client = OpenAI(api_key="")
+load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key)
+
 
 # Variável global para manter a última pergunta feita ao usuário
 ultima_pergunta = ""
