@@ -2,7 +2,7 @@ from app.services.sistema_regras import evaluate_rules, get_missing_symptoms
 from openai import OpenAI
 
 # Inicializa o cliente da OpenAI com a chave de API
-client = OpenAI(api_key="")
+client = OpenAI(api_key="a")
 
 # Variável global para manter a última pergunta feita ao usuário
 ultima_pergunta = ""
