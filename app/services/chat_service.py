@@ -69,7 +69,7 @@ def gerar_pergunta(sintomas_faltando):
     print(sintomas_faltando)
     system_prompt = (
         "Você é um assistente que faz perguntas para ajudar a diagnosticar problemas de computador. "
-        "pergunte se o usuario enfrentou problema com esse sintoma: "
+        "pergunte se o usuario enfrentou problema com esse sintoma (apenas e somente o primeiro item): "
         f"{', '.join(sintomas_faltando)}. "
     )
     
