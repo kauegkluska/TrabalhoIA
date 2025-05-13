@@ -23,7 +23,7 @@ SINTOMAS_VALIDOS = [
     'popups_no_navegador', 'arquivos_somem', 'programas_abrem_sozinhos', 'acesso_a_sites_estranhos',
     'artefatos_na_tela', 'sem_sinal_de_video', 'travamento_em_graficos', 'cooler_da_gpu_nao_gira',
     'driver_da_gpu_falha', 'aumento_rapido_de_temperatura', 'cooler_silencioso_ou_com_ruido',
-    'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha', 'cpu_queimada'
+    'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha', 'cpu_queimada''Wifi_não_funciona_após_formatação','não_aparece_redes_wifi_para_se_conectar'
 ]
    
 
