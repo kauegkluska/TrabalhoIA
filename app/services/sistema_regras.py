@@ -1,156 +1,165 @@
 from experta import *
 
+
 SINTOMAS_VALIDOS = [
-    'nao_liga', 'sem_som_ou_luz', 'ventoinhas_paradas',
-    'tela_azul', 'travamentos', 'reinicializacao_inesperada',
-    'lentidao', 'arquivos_corrompidos', 'erros_leitura_gravacao', 'aquecimento',
-    'bip_asrock_1_curto', 'bip_asrock_2_curtos', 'bip_asrock_3_curtos', 'bip_asrock_continuo',
-    'bip_gigabyte_1_longo_2_curtos', 'bip_gigabyte_1_longo_3_curtos', 'bip_gigabyte_continuo',
-    'bip_asus_1_curto', 'bip_asus_2_curtos', 'bip_asus_3_curtos', 'bip_asus_continuo',
-    'bip_colorful_1_longo_2_curtos', 'bip_colorful_1_longo_3_curtos',
-    'bip_colorful_3_longos', 'bip_colorful_5_longos', 'bip_colorful_ausente'
-]
-    
-MODELOS_VALIDOS = [
-    'modelo("asus")', 'modelo("asrock")', 'modelo("gigabyte")', 'modelo("colorful")'
+    'lentidao_ao_abrir_arquivos', 'arquivos_corrompidos', 'erro_ao_copiar_arquivos', 
+    'travamento_ao_inicializar', 'clique_vindo_do_hd', 'desligamento_repentino', 
+    'travamento_em_uso_intenso', 'cooler_em_alta_velocidade', 'temperatura_acima_de_80', 
+    'lentidao_sem_motivo', 'nao_liga', 'reinicializacoes_aleatorias', 'componentes_sem_energia', 
+    'queima_frequente_de_componentes', 'cheiro_de_queimado', 'tela_azul', 'aplicacoes_fechando_sozinhas', 
+    'falha_na_instalacao_do_sistema', 'ram_mostrando_menos_que_instalada', 'nao_da_video', 
+    'hardware_nao_reconhecido', 'usb_nao_funciona', 'erros_de_post', 'instabilidade_geral', 
+    'loop_de_boot', 'arquivos_de_sistema_ausentes', 'menu_iniciar_nao_funciona', 
+    'travamentos_apos_atualizacao', 'tela_preta_pos_boot', 'resolucao_incorreta', 
+    'travamento_em_jogos', 'erro_no_driver_de_video', 'so_funciona_no_modo_seguro', 
+    'popups_no_navegador', 'arquivos_somem', 'programas_abrem_sozinhos', 'acesso_a_sites_estranhos', 
+    'artefatos_na_tela', 'sem_sinal_de_video', 'travamento_em_graficos', 'cooler_da_gpu_nao_gira', 
+    'driver_da_gpu_falha', 'aumento_rapido_de_temperatura', 'cooler_silencioso_ou_com_ruido', 
+    'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha', 'cpu_queimada'
+
+
 ]
 
-SINTOMAS_BEEP = [
-    s for s in SINTOMAS_VALIDOS if s.startswith("bip_")
-]
 
-SINTOMAS_GENERICOS = [
-    f"sintoma('{s}')" for s in SINTOMAS_VALIDOS if not s.startswith("bip_")
-]
 
 class Sintoma(Fact):
     """Fato representando um sintoma do computador."""
     pass
 
-class Modelo_placa_mae(Fact):
-    """Fato representando o modelo da placa mãe."""
-    pass
-
-class Modelo_notebook(Fact):
-    """Fato representando o modelo do notebook."""
-    pass
-
-class Tipo_computador(Fact):
-    """Fato representando o tipo de computador."""
-    pass
-
 class SistemaRegras(KnowledgeEngine):
     def __init__(self):
         super().__init__()
-        self.diagnosticos = []
+        self.diagnostico_final = None
         self.fatos_relevantes = []
-
+        
     def reset(self):
         super().reset()
-        self.diagnosticos = []
+        self.diagnostico_final = None
         self.fatos_relevantes = []
-
-    # ----- Regras com sintomas genéricos -----
-    @Rule(Sintoma(nao_liga=True), Sintoma(ventoinhas_paradas=True))
-    def fonte_alimentacao(self):
-        self.diagnosticos.append("Fonte de alimentação com defeito")
-
-    @Rule(Sintoma(tela_azul=True), Sintoma(reinicializacao_inesperada=True))
-    def memoria_defeituosa(self):
-        self.diagnosticos.append("Problema na memória RAM")
-
-    @Rule(Sintoma(lentidao=True), Sintoma(erros_leitura_gravacao=True))
-    def hd_com_defeito(self):
-        self.diagnosticos.append("Disco rígido (HD) com defeito")
-
-    @Rule(Sintoma(travamentos=True), Sintoma(aquecimento=True))
-    def superaquecimento(self):
-        self.diagnosticos.append("Processador superaquecendo")
-
-    @Rule(Sintoma(nao_liga=True), Sintoma(sem_som_ou_luz=True))
-    def placa_mae(self):
-        self.diagnosticos.append("Problema na placa-mãe")
-
-    # ----- Regras específicas para placas-mãe -----
-    @Rule(Sintoma(bip_asrock_1_curto=True), Modelo_placa_mae(modelo='ASRock'))
-    def asrock_dram_refresh(self):
-        self.diagnosticos.append("Falha de renovação DRAM (ASRock)")
-
-    @Rule(Sintoma(bip_asrock_2_curtos=True), Modelo_placa_mae(modelo='ASRock'))
-    def asrock_parity(self):
-        self.diagnosticos.append("Falha de circuito de paridade (ASRock)")
-
-    @Rule(Sintoma(bip_asrock_3_curtos=True), Modelo_placa_mae(modelo='ASRock'))
-    def asrock_ram_64k(self):
-        self.diagnosticos.append("Falha de 64K de RAM base (ASRock)")
-
-    @Rule(Sintoma(bip_asrock_continuo=True), Modelo_placa_mae(modelo='ASRock'))
-    def asrock_power(self):
-        self.diagnosticos.append("Problema de fonte ou placa-mãe (ASRock)")
-
-
 
     def run_with_facts(self, fatos_dict):
         self.reset()
         self.fatos_relevantes = fatos_dict
-        for chave, valor in fatos_dict.items():
-            if chave in SINTOMAS_VALIDOS:
-                self.declare(Sintoma(**{chave: True}))
-            elif chave in MODELOS_PLACA_MAE:
-                self.declare(Modelo_placa_mae(modelo=chave))
-            elif chave in MODELOS_NOTEBOOK:
-                self.declare(Modelo_notebook(modelo=chave))
-            elif chave in TIPOS_DE_COMPUTADOR:
-                self.declare(Tipo_computador(tipo=chave))
-        self.run()
-        return self.diagnosticos if self.diagnosticos else None
+        for sintoma in fatos_dict:
+            self.declare(Sintoma(sintoma=sintoma))
 
-    def sintomas_necessarios(self):
+        self.run()
+        return self.diagnostico_final
+    
+    def sintomas_necessarios(self, max_faltantes=3):
         """
-        Retorna sintomas genéricos pendentes para completar pares de diagnóstico.
+        Retorna os sintomas relevantes que podem levar a diagnósticos,
+        filtrando os que ainda não foram fornecidos.
+        Considera como relevante uma regra da qual faltam até 'max_faltantes' sintomas.
         """
-        regras_pares = [
-            {'nao_liga', 'ventoinhas_paradas'},
-            {'tela_azul', 'reinicializacao_inesperada'},
-            {'lentidao', 'erros_leitura_gravacao'},
-            {'travamentos', 'aquecimento'},
-            {'nao_liga', 'sem_som_ou_luz'},
-            {'bateria_dura_pouco', 'aquecimento'},
-            {'tela_nao_acende', 'sem_som_ou_luz'},
-            {'bip_asrock_1_curto'},
-            {'bip_asrock_2_curtos'},
-            {'bip_asrock_3_curtos'},
-            {'bip_asrock_continuo'},
-            {'bip_gigabyte_1_longo_2_curtos'},
-            {'bip_gigabyte_1_longo_3_curtos'},
-            {'bip_gigabyte_continuo'},
-            {'bip_asus_1_curto'},
-            {'bip_asus_2_curtos'},
-            {'bip_asus_3_curtos'},
-            {'bip_asus_continuo'},
-            {'bip_colorful_1_longo_2_curtos'},
-            {'bip_colorful_1_longo_3_curtos'},
-            {'bip_colorful_3_longos'},
-            {'bip_colorful_5_longos'},
-            {'bip_colorful_ausente'},
-            {'bateria_nao_carrega'},
-            {'tela_nao_acende', 'sem_som_ou_luz'},
-            {'teclado_nao_responde'},
-            {'computador_desliga_quando_joga'}
+        regras_sintomas = [
+            {"lentidao_ao_abrir_arquivos", "arquivos_corrompidos", "erro_ao_copiar_arquivos", "travamento_ao_inicializar", "clique_vindo_do_hd"},
+            {"desligamento_repentino", "travamento_em_uso_intenso", "cooler_em_alta_velocidade", "temperatura_acima_de_80", "lentidao_sem_motivo"},
+            {"nao_liga", "reinicializacoes_aleatorias", "componentes_sem_energia", "queima_frequente_de_componentes", "cheiro_de_queimado"},
+            {"tela_azul", "aplicacoes_fechando_sozinhas", "travamentos_aleatorios", "falha_na_instalacao_do_sistema", "ram_mostrando_menos_que_instalada"},
+            {"nao_da_video", "hardware_nao_reconhecido", "usb_nao_funciona", "erros_de_post", "instabilidade_geral"},
+            {"loop_de_boot", "arquivos_de_sistema_ausentes", "menu_iniciar_nao_funciona", "travamentos_apos_atualizacao"},
+            {"tela_preta_pos_boot", "resolucao_incorreta", "travamento_em_jogos", "erro_no_driver_de_video", "so_funciona_no_modo_seguro"},
+            {"lentidao_anormal", "popups_no_navegador", "arquivos_somem", "programas_abrem_sozinhos", "acesso_a_sites_estranhos"},
+            {"artefatos_na_tela", "sem_sinal_de_video", "travamento_em_graficos", "cooler_da_gpu_nao_gira", "driver_da_gpu_falha"},
+            {"aumento_rapido_de_temperatura", "cooler_silencioso_ou_com_ruido", "desliga_apos_ligar", "bios_indica_falha_na_ventoinha", "cpu_queimada"}
         ]
-        fornecidos = set(self.fatos_relevantes.keys())
-        faltando = set()
-        for regra in regras_pares:
-            diff = regra - fornecidos
-            if len(diff) == 1:
-                faltando.update(diff)
-        return list(faltando)
         
+        fornecidos = set(self.fatos_relevantes.keys())
+        sintomas_faltando = set()
+
+        for regra in regras_sintomas:
+            faltam = regra - fornecidos
+            if 0 < len(faltam) <= max_faltantes:  # ignorar se já tem todos, mas incluir se está quase completo
+                sintomas_faltando.update(faltam)
+                
+        return list(sintomas_faltando)
+
+    # Diagnósticos com base nos sintomas recebidos
+    @Rule(Sintoma(sintoma="lentidao_ao_abrir_arquivos"),
+          Sintoma(sintoma="arquivos_corrompidos"),
+          Sintoma(sintoma="erro_ao_copiar_arquivos"),
+          Sintoma(sintoma="travamento_ao_inicializar"),
+          Sintoma(sintoma="clique_vindo_do_hd"))
+    def diagnostico_hd_ruim(self):
+        self.diagnostico_final = "Diagnóstico: HD com setores defeituosos"
+
+    @Rule(Sintoma(sintoma="desligamento_repentino"),
+          Sintoma(sintoma="travamento_em_uso_intenso"),
+          Sintoma(sintoma="cooler_em_alta_velocidade"),
+          Sintoma(sintoma="temperatura_acima_de_80"),
+          Sintoma(sintoma="lentidao_sem_motivo"))
+    def diagnostico_superaquecimento(self):
+        self.diagnostico_final = "Diagnóstico: Superaquecimento da CPU"
+
+    @Rule(Sintoma(sintoma="nao_liga"),
+          Sintoma(sintoma="reinicializacoes_aleatorias"),
+          Sintoma(sintoma="componentes_sem_energia"),
+          Sintoma(sintoma="queima_frequente_de_componentes"),
+          Sintoma(sintoma="cheiro_de_queimado"))
+    def diagnostico_fonte_energia(self):
+        self.diagnostico_final = "Diagnóstico: Fonte de alimentação com defeito"
+
+    @Rule(Sintoma(sintoma="tela_azul"),
+          Sintoma(sintoma="aplicacoes_fechando_sozinhas"),
+          Sintoma(sintoma="travamentos_aleatorios"),
+          Sintoma(sintoma="falha_na_instalacao_do_sistema"),
+          Sintoma(sintoma="ram_mostrando_menos_que_instalada"))
+    def diagnostico_ram_defeituosa(self):
+        self.diagnostico_final = "Diagnóstico: Memória RAM defeituosa"
+
+    @Rule(Sintoma(sintoma="nao_da_video"),
+          Sintoma(sintoma="hardware_nao_reconhecido"),
+          Sintoma(sintoma="usb_nao_funciona"),
+          Sintoma(sintoma="erros_de_post"),
+          Sintoma(sintoma="instabilidade_geral"))
+    def diagnostico_placa_mae(self):
+        self.diagnostico_final = "Diagnóstico: Placa-mãe danificada"
+
+    @Rule(Sintoma(sintoma="loop_de_boot"),
+          Sintoma(sintoma="arquivos_de_sistema_ausentes"),
+          Sintoma(sintoma="menu_iniciar_nao_funciona"),
+          Sintoma(sintoma="travamentos_apos_atualizacao"))
+    def diagnostico_sistema_operacional(self):
+        self.diagnostico_final = "Diagnóstico: Sistema operacional corrompido"
+
+    @Rule(Sintoma(sintoma="tela_preta_pos_boot"),
+          Sintoma(sintoma="resolucao_incorreta"),
+          Sintoma(sintoma="travamento_em_jogos"),
+          Sintoma(sintoma="erro_no_driver_de_video"),
+          Sintoma(sintoma="so_funciona_no_modo_seguro"))
+    def diagnostico_driver_video(self):
+        self.diagnostico_final = "Diagnóstico: Driver de vídeo com problema"
+
+    @Rule(Sintoma(sintoma="lentidao_anormal"),
+          Sintoma(sintoma="popups_no_navegador"),
+          Sintoma(sintoma="arquivos_somem"),
+          Sintoma(sintoma="programas_abrem_sozinhos"),
+          Sintoma(sintoma="acesso_a_sites_estranhos"))
+    def diagnostico_malware(self):
+        self.diagnostico_final = "Diagnóstico: Malware ou vírus"
+
+    @Rule(Sintoma(sintoma="artefatos_na_tela"),
+          Sintoma(sintoma="sem_sinal_de_video"),
+          Sintoma(sintoma="travamento_em_graficos"),
+          Sintoma(sintoma="cooler_da_gpu_nao_gira"),
+          Sintoma(sintoma="driver_da_gpu_falha"))
+    def diagnostico_placa_video(self):
+        self.diagnostico_final = "Diagnóstico: Placa de vídeo com falha"
+
+    @Rule(Sintoma(sintoma="aumento_rapido_de_temperatura"),
+          Sintoma(sintoma="cooler_silencioso_ou_com_ruido"),
+          Sintoma(sintoma="desliga_apos_ligar"),
+          Sintoma(sintoma="bios_indica_falha_na_ventoinha"),
+          Sintoma(sintoma="cpu_queimada"))
+    def diagnostico_cpu(self):
+        self.diagnostico_final = "Diagnóstico: CPU queimada"
+
 
 def evaluate_rules(fatos_lista):
     """
     fatos_lista: lista de strings no formato sintoma('nome')
-    Retorna lista de diagnósticos ou None.
+    Retorna o diagnóstico ou None
     """
     fatos_dict = {}
     for fato in fatos_lista:
@@ -158,21 +167,20 @@ def evaluate_rules(fatos_lista):
             nome = fato.replace("sintoma(", "").replace(")", "").replace("'", "").strip()
             if nome in SINTOMAS_VALIDOS:
                 fatos_dict[nome] = True
+
     engine = SistemaRegras()
+    print(f"Fatos recebidos: {fatos_dict}")
     return engine.run_with_facts(fatos_dict)
 
 
-def get_missing_symptoms(fatos):
-    if not any(fato.startswith("tipo_computador(") for fato in fatos):
-        return TIPOS_COMPUTADOR
+def get_missing_symptoms(fatos_lista):
+    fatos_dict = {}
+    for fato in fatos_lista:
+        if "sintoma(" in fato:
+            nome = fato.replace("sintoma(", "").replace(")", "").replace("'", "").strip()
+            if nome in SINTOMAS_VALIDOS:
+                fatos_dict[nome] = True
 
-    if not any(fato.startswith("modelo(") for fato in fatos):
-        return MODELOS_VALIDOS
-
-    if not any(fato.startswith("sintoma('bip_") for fato in fatos):
-        return [f"sintoma('{s}')" for s in SINTOMAS_BEEP]
-
-    sintomas_presentes = set(fato for fato in fatos if fato.startswith("sintoma("))
-    sintomas_faltando = [s for s in SINTOMAS_GENERICOS if s not in sintomas_presentes]
-
-    return sintomas_faltando
+    engine = SistemaRegras()
+    engine.run_with_facts(fatos_dict)
+    return engine.sintomas_necessarios()
