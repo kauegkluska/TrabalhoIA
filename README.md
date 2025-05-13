@@ -66,12 +66,6 @@ python --version
 pip install -r requirements.txt
 ```
 
-#### 7. Atualize a biblioteca da OpenAI (opcional)
-
-```bash
-pip install --upgrade openai
-```
-
 > Após ativar o ambiente virtual, todas as dependências serão instaladas de forma isolada, sem interferir nas configurações globais do Python.
 
 ---
