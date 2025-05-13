@@ -71,12 +71,13 @@ class SistemaRegras(KnowledgeEngine):
 
         for regra in regras_sintomas:
             faltam = regra - fornecidos
-            if 0 < len(faltam) <= max_faltantes:  # ignorar se já tem todos, mas incluir se está quase completo
+            if 0 < len(faltam) <= max_faltantes: 
                 sintomas_faltando.update(faltam)
                 
         return list(sintomas_faltando)
+    
 
-    # Diagnósticos com base nos sintomas recebidos
+
     @Rule(Sintoma(sintoma="lentidao_ao_abrir_arquivos"),
           Sintoma(sintoma="arquivos_corrompidos"),
           Sintoma(sintoma="erro_ao_copiar_arquivos"),
