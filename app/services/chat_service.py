@@ -105,31 +105,42 @@ def descrever_diagnostico(diagnostico):
 
 
 def get_chat_response(user_input, fatos_anteriores=[]):
-    # Extrair os sintomas do input do usuário
-    fatos_texto = extrair_sintomas(user_input)
+    # Se não houver fatos anteriores, significa que é a primeira interação
+    if not fatos_anteriores:
+        # Extrair os sintomas do input inicial do usuário
+        fatos_texto = extrair_sintomas(user_input)
+        novos_fatos = [f for f in fatos_texto.splitlines() if "nenhum" not in f]
+        fatos_anteriores += novos_fatos
+        
+        # Obter diagnóstico inicial ou próximos passos
+        resultado = evaluate_rules(fatos_anteriores)
+        
+        # Se for a primeira mensagem e não houver sintomas identificados
+        if not novos_fatos:
+            return "Olá! Sou um sistema especialista em diagnóstico de problemas de computador. Para ajudá-lo melhor, preciso que você descreva os sintomas que seu computador está apresentando. Por exemplo: se está lento, travando, fazendo barulhos estranhos, não liga, etc. Quanto mais detalhes você fornecer, mais preciso será meu diagnóstico!"
+    else:
+        # Extrair os sintomas do input do usuário
+        fatos_texto = extrair_sintomas(user_input)
+        novos_fatos = [f for f in fatos_texto.splitlines() if f not in fatos_anteriores and "nenhum" not in f]
+        fatos_anteriores += novos_fatos
+        
+        # Obter diagnóstico ou próximos passos
+        resultado = evaluate_rules(fatos_anteriores)
     
-    # Filtrar os novos fatos para adicionar na lista de sintomas conhecidos
-    novos_fatos = [f for f in fatos_texto.splitlines() if f not in fatos_anteriores and "nenhum" not in f]
-    fatos_anteriores += novos_fatos  # Atualizando a lista de sintomas conhecidos
-    print(fatos_anteriores)
-
-    # Verificando o diagnóstico baseado nos sintomas conhecidos
-    diagnostico = evaluate_rules(fatos_anteriores)
-
-    # Se diagnóstico encontrado, retornar a explicação
-    if diagnostico:
+    # Se o resultado for um dicionário com sintomas faltantes
+    if isinstance(resultado, dict) and "sintomas_faltantes" in resultado:
+        # Escolher a primeira regra e seus sintomas faltantes
+        primeira_regra = list(resultado["sintomas_faltantes"].keys())[0]
+        sintomas = list(resultado["sintomas_faltantes"][primeira_regra])[0]
+        return gerar_pergunta([sintomas])
+    
+    # Se for um diagnóstico final
+    elif isinstance(resultado, str) and "Diagnóstico:" in resultado:
         global ultima_pergunta
         ultima_pergunta = ""  # Resetar a pergunta anterior após diagnóstico
-        return descrever_diagnostico(diagnostico)
+        fatos_anteriores.clear()  # Limpar o histórico de fatos após o diagnóstico
+        return descrever_diagnostico(resultado)
     
-    # Caso contrário, buscar sintomas faltando e gerar nova pergunta
+    # Se for uma mensagem de orientação
     else:
-        sintomas_faltando = get_missing_symptoms(fatos_anteriores)
-
-        # Se houver sintomas faltando, gerar pergunta
-        if sintomas_faltando:
-            pergunta = gerar_pergunta(sintomas_faltando)
-       
-            return pergunta
-        else:
-            return "Ainda não consigo determinar o problema com base nas informações fornecidas. Você pode descrever mais sintomas?"
+        return resultado
