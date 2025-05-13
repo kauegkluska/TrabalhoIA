@@ -1,6 +1,5 @@
 from experta import *
 
-
 SINTOMAS_VALIDOS = [
     'lentidao_ao_abrir_arquivos', 'arquivos_corrompidos', 'erro_ao_copiar_arquivos', 
     'travamento_ao_inicializar', 'clique_vindo_do_hd', 'desligamento_repentino', 
@@ -15,21 +14,63 @@ SINTOMAS_VALIDOS = [
     'popups_no_navegador', 'arquivos_somem', 'programas_abrem_sozinhos', 'acesso_a_sites_estranhos', 
     'artefatos_na_tela', 'sem_sinal_de_video', 'travamento_em_graficos', 'cooler_da_gpu_nao_gira', 
     'driver_da_gpu_falha', 'aumento_rapido_de_temperatura', 'cooler_silencioso_ou_com_ruido', 
-    'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha', 'cpu_queimada'
+    'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha'
 ]
-
 
 
 class Sintoma(Fact):
     """Fato representando um sintoma do computador."""
     pass
 
+
 class SistemaRegras(KnowledgeEngine):
     def __init__(self):
         super().__init__()
         self.diagnostico_final = None
         self.fatos_relevantes = []
-        
+        self.regras_sintomas = {
+            "Diagnóstico: HD com setores defeituosos": [
+                "lentidao_ao_abrir_arquivos", "arquivos_corrompidos", "erro_ao_copiar_arquivos",
+                "travamento_ao_inicializar", "clique_vindo_do_hd"
+            ],
+            "Diagnóstico: Superaquecimento da CPU": [
+                "desligamento_repentino", "travamento_em_uso_intenso", "cooler_em_alta_velocidade",
+                "temperatura_acima_de_80", "lentidao_sem_motivo"
+            ],
+            "Diagnóstico: Fonte de alimentação com defeito": [
+                "nao_liga", "reinicializacoes_aleatorias", "componentes_sem_energia",
+                "queima_frequente_de_componentes", "cheiro_de_queimado"
+            ],
+            "Diagnóstico: Memória RAM defeituosa": [
+                "tela_azul", "aplicacoes_fechando_sozinhas", "travamentos_aleatorios",
+                "falha_na_instalacao_do_sistema", "nao_da_video", "ram_mostrando_menos_que_instalada"
+            ],
+            "Diagnóstico: Placa-mãe danificada": [
+                "nao_da_video", "hardware_nao_reconhecido", "usb_nao_funciona",
+                "erros_de_post", "instabilidade_geral"
+            ],
+            "Diagnóstico: Sistema operacional corrompido": [
+                "loop_de_boot", "arquivos_de_sistema_ausentes", "menu_iniciar_nao_funciona",
+                "travamentos_apos_atualizacao"
+            ],
+            "Diagnóstico: Driver de vídeo com problema": [
+                "tela_preta_pos_boot", "resolucao_incorreta", "travamento_em_jogos",
+                "erro_no_driver_de_video", "so_funciona_no_modo_seguro"
+            ],
+            "Diagnóstico: Malware ou vírus": [
+                "lentidao_anormal", "popups_no_navegador", "arquivos_somem",
+                "programas_abrem_sozinhos", "acesso_a_sites_estranhos"
+            ],
+            "Diagnóstico: Placa de vídeo com falha": [
+                "artefatos_na_tela", "sem_sinal_de_video", "travamento_em_graficos",
+                "cooler_da_gpu_nao_gira", "driver_da_gpu_falha"
+            ],
+            "Diagnóstico: CPU queimada": [
+                "aumento_rapido_de_temperatura", "cooler_silencioso_ou_com_ruido",
+                "desliga_apos_ligar", "bios_indica_falha_na_ventoinha"
+            ]
+        }
+
     def reset(self):
         super().reset()
         self.diagnostico_final = None
@@ -43,38 +84,18 @@ class SistemaRegras(KnowledgeEngine):
 
         self.run()
         return self.diagnostico_final
-    
-    def sintomas_necessarios(self, max_faltantes=3):
-        """
-        Retorna os sintomas relevantes que podem levar a diagnósticos,
-        filtrando os que ainda não foram fornecidos.
-        Considera como relevante uma regra da qual faltam até 'max_faltantes' sintomas.
-        """
-        regras_sintomas = [
-            {"lentidao_ao_abrir_arquivos", "arquivos_corrompidos", "erro_ao_copiar_arquivos", "travamento_ao_inicializar", "clique_vindo_do_hd"},
-            {"desligamento_repentino", "travamento_em_uso_intenso", "cooler_em_alta_velocidade", "temperatura_acima_de_80", "lentidao_sem_motivo"},
-            {"nao_liga", "reinicializacoes_aleatorias", "componentes_sem_energia", "queima_frequente_de_componentes", "cheiro_de_queimado"},
-            {"tela_azul", "aplicacoes_fechando_sozinhas", "travamentos_aleatorios", "falha_na_instalacao_do_sistema", "ram_mostrando_menos_que_instalada"},
-            {"nao_da_video", "hardware_nao_reconhecido", "usb_nao_funciona", "erros_de_post", "instabilidade_geral"},
-            {"loop_de_boot", "arquivos_de_sistema_ausentes", "menu_iniciar_nao_funciona", "travamentos_apos_atualizacao"},
-            {"tela_preta_pos_boot", "resolucao_incorreta", "travamento_em_jogos", "erro_no_driver_de_video", "so_funciona_no_modo_seguro"},
-            {"lentidao_anormal", "popups_no_navegador", "arquivos_somem", "programas_abrem_sozinhos", "acesso_a_sites_estranhos"},
-            {"artefatos_na_tela", "sem_sinal_de_video", "travamento_em_graficos", "cooler_da_gpu_nao_gira", "driver_da_gpu_falha"},
-            {"aumento_rapido_de_temperatura", "cooler_silencioso_ou_com_ruido", "desliga_apos_ligar", "bios_indica_falha_na_ventoinha", "cpu_queimada"},
-            {"Wifi_não_funciona_após_formatação","não_aparece_redes_wifi_para_se_conectar"}
-        ]
-        
-        fornecidos = set(self.fatos_relevantes.keys())
-        sintomas_faltando = set()
 
-        for regra in regras_sintomas:
-            faltam = regra - fornecidos
-            if 0 < len(faltam) <= max_faltantes: 
-                sintomas_faltando.update(faltam)
-                
-        return list(sintomas_faltando)
+    def sintomas_necessarios(self):
+        pendentes = {}
 
+        sintomas_informados = set(self.fatos_relevantes.keys())
 
+        for diagnostico, sintomas in self.regras_sintomas.items():
+            sintomas_faltando = [s for s in sintomas if s not in sintomas_informados]
+            if sintomas_faltando and len(sintomas_faltando) < len(sintomas):
+                pendentes[diagnostico] = sintomas_faltando
+
+        return pendentes
 
     @Rule(Sintoma(sintoma="lentidao_ao_abrir_arquivos"),
           Sintoma(sintoma="arquivos_corrompidos"),
@@ -155,12 +176,8 @@ class SistemaRegras(KnowledgeEngine):
           Sintoma(sintoma="cpu_queimada"))
     def diagnostico_cpu(self):
         self.diagnostico_final = "Diagnóstico: CPU queimada"
-        
-    @Rule(Sintoma(sintoma="Wifi_não_funciona_após_formatação"),
-         Sintoma(sintoma="não_aparece_redes_wifi_para_se_conectar"))
-    def diagnostico_rede(self):
-        self.diagnostico_final = "Diagnostico: Falta do driver Wifi"
-        
+
+
 
 
 def evaluate_rules(fatos_lista):

@@ -23,7 +23,7 @@ SINTOMAS_VALIDOS = [
     'popups_no_navegador', 'arquivos_somem', 'programas_abrem_sozinhos', 'acesso_a_sites_estranhos',
     'artefatos_na_tela', 'sem_sinal_de_video', 'travamento_em_graficos', 'cooler_da_gpu_nao_gira',
     'driver_da_gpu_falha', 'aumento_rapido_de_temperatura', 'cooler_silencioso_ou_com_ruido',
-    'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha', 'cpu_queimada','Wifi_não_funciona_após_formatação','não_aparece_redes_wifi_para_se_conectar'
+    'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha'
 ]
    
 
@@ -38,7 +38,7 @@ def extrair_sintomas(texto_usuario):
             "em fatos no formato sintoma('nome_do_sintoma') para um sistema especialista de manutenção de computadores. "
             f"Os sintomas válidos são: {', '.join(SINTOMAS_VALIDOS)}. "
             "Se não identificar nenhum sintoma, responda sintoma('nenhum'). "
-            f"Baseando-se na pergunta anterior '{ultima_pergunta}', extraia os sintomas do texto: {texto_usuario}"
+            f"Baseando-se na pergunta anterior '{ultima_pergunta}', extraia os sintomas do texto: {texto_usuario}, apenas retorne se você tiver 100% de certeza da resposta"
         )
     
     else:
@@ -47,7 +47,7 @@ def extrair_sintomas(texto_usuario):
             "em fatos no formato sintoma('nome_do_sintoma') para um sistema especialista de manutenção de computadores. "
             f"Os sintomas válidos são: {', '.join(SINTOMAS_VALIDOS)}. "
             "Se não identificar nenhum sintoma, responda sintoma('nenhum')."
-            f"Extraia os sintomas do texto: {texto_usuario}"
+            f"Extraia os sintomas do texto: {texto_usuario}, apenas retorne se você tiver 100% de certeza da resposta"
             
         )
     
@@ -68,8 +68,8 @@ def gerar_pergunta(sintomas_faltando):
     
     print(sintomas_faltando)
     system_prompt = (
-        "Você é um assistente que faz perguntas para ajudar a diagnosticar problemas de computador. "
-        "pergunte se o usuario enfrentou problema com esse sintoma (apenas e somente o primeiro item): "
+        "Você é um assistente que faz perguntas para ajudar a diagnosticar problemas de computador. No formato 'Diagnóstico: x : [x, x, x] "
+        "pergunte se o usuario enfrentou problema com esse sintoma (apenas e somente o primeiro item dentro dos colchetes): "
         f"{', '.join(sintomas_faltando)}. "
     )
     
