@@ -16,8 +16,6 @@ SINTOMAS_VALIDOS = [
     'artefatos_na_tela', 'sem_sinal_de_video', 'travamento_em_graficos', 'cooler_da_gpu_nao_gira', 
     'driver_da_gpu_falha', 'aumento_rapido_de_temperatura', 'cooler_silencioso_ou_com_ruido', 
     'desliga_apos_ligar', 'bios_indica_falha_na_ventoinha', 'cpu_queimada'
-
-
 ]
 
 
@@ -74,7 +72,7 @@ class SistemaRegras(KnowledgeEngine):
                 sintomas_faltando.update(faltam)
                 
         return list(sintomas_faltando)
-    
+
 
 
     @Rule(Sintoma(sintoma="lentidao_ao_abrir_arquivos"),
