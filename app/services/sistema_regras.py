@@ -60,7 +60,8 @@ class SistemaRegras(KnowledgeEngine):
             {"tela_preta_pos_boot", "resolucao_incorreta", "travamento_em_jogos", "erro_no_driver_de_video", "so_funciona_no_modo_seguro"},
             {"lentidao_anormal", "popups_no_navegador", "arquivos_somem", "programas_abrem_sozinhos", "acesso_a_sites_estranhos"},
             {"artefatos_na_tela", "sem_sinal_de_video", "travamento_em_graficos", "cooler_da_gpu_nao_gira", "driver_da_gpu_falha"},
-            {"aumento_rapido_de_temperatura", "cooler_silencioso_ou_com_ruido", "desliga_apos_ligar", "bios_indica_falha_na_ventoinha", "cpu_queimada"}
+            {"aumento_rapido_de_temperatura", "cooler_silencioso_ou_com_ruido", "desliga_apos_ligar", "bios_indica_falha_na_ventoinha", "cpu_queimada"},
+            {"Wifi_não_funciona_após_formatação","não_aparece_redes_wifi_para_se_conectar"}
         ]
         
         fornecidos = set(self.fatos_relevantes.keys())
@@ -103,6 +104,7 @@ class SistemaRegras(KnowledgeEngine):
           Sintoma(sintoma="aplicacoes_fechando_sozinhas"),
           Sintoma(sintoma="travamentos_aleatorios"),
           Sintoma(sintoma="falha_na_instalacao_do_sistema"),
+          Sintoma(sintoma="nao_da_video"),
           Sintoma(sintoma="ram_mostrando_menos_que_instalada"))
     def diagnostico_ram_defeituosa(self):
         self.diagnostico_final = "Diagnóstico: Memória RAM defeituosa"
@@ -153,6 +155,12 @@ class SistemaRegras(KnowledgeEngine):
           Sintoma(sintoma="cpu_queimada"))
     def diagnostico_cpu(self):
         self.diagnostico_final = "Diagnóstico: CPU queimada"
+        
+    @Rule(Sintoma(sintoma="Wifi_não_funciona_após_formatação"),
+         Sintoma(sintoma="não_aparece_redes_wifi_para_se_conectar"))
+    def diagnostico_rede(self):
+        self.diagnostico_final = "Diagnostico: Falta do driver Wifi"
+        
 
 
 def evaluate_rules(fatos_lista):
