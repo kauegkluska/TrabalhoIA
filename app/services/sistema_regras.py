@@ -10,8 +10,6 @@ SINTOMAS_VALIDOS = [
     'bip_colorful_1_longo_2_curtos', 'bip_colorful_1_longo_3_curtos',
     'bip_colorful_3_longos', 'bip_colorful_5_longos', 'bip_colorful_ausente'
 ]
-
-TIPOS_COMPUTADOR = ['tipo_computador("notebook")', 'tipo_computador("pc")']
     
 MODELOS_VALIDOS = [
     'modelo("asus")', 'modelo("asrock")', 'modelo("gigabyte")', 'modelo("colorful")'
@@ -23,10 +21,6 @@ SINTOMAS_BEEP = [
 
 SINTOMAS_GENERICOS = [
     f"sintoma('{s}')" for s in SINTOMAS_VALIDOS if not s.startswith("bip_")
-]
-
-MODELOS_NOTEBOOK = [
-    'Dell', 'Lenovo', 'Acer', 'HP', 'Samsung', 'vaio'
 ]
 
 class Sintoma(Fact):
@@ -94,26 +88,7 @@ class SistemaRegras(KnowledgeEngine):
     def asrock_power(self):
         self.diagnosticos.append("Problema de fonte ou placa-mãe (ASRock)")
 
-    # ----- Regras para notebooks -----
-    @Rule(Sintoma(bateria_nao_carrega=True), Tipo_computador(tipo='notebook'))
-    def defeito_bateria(self):
-        self.diagnosticos.append("Bateria com defeito ou conector de carga ruim")
 
-    @Rule(Sintoma(bateria_dura_pouco=True), Sintoma(aquecimento=True), Tipo_computador(tipo='notebook'))
-    def aquecimento_afeta_bateria(self):
-        self.diagnosticos.append("Superaquecimento reduz capacidade da bateria")
-
-    @Rule(Sintoma(tela_nao_acende=True), Sintoma(sem_som_ou_luz=True), Tipo_computador(tipo='notebook'))
-    def problema_backlight(self):
-        self.diagnosticos.append("Inverter ou backlight da tela com defeito")
-
-    @Rule(Sintoma(teclado_nao_responde=True), Tipo_computador(tipo='notebook'))
-    def defeito_teclado(self):
-        self.diagnosticos.append("Falha no teclado – possível mau contato ou driver")
-
-    @Rule(Sintoma(computador_desliga_quando_joga=True), Tipo_computador(tipo='notebook'))
-    def troca_pastatermica(self):
-        self.diagnosticos.append("Fazer limpeza do notebook e troca da pasta térmica")
 
     def run_with_facts(self, fatos_dict):
         self.reset()
