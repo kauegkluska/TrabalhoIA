@@ -16,8 +16,13 @@ SINTOMAS_VALIDOS = [
     'problemas_de_video', 'problemas_de_audio', 'problemas_de_rede',
     'superaquecimento', 'ruidos_estranhos', 'desligamentos_involuntarios',
     'falha_de_componente', 'instabilidade_apos_atualizacao',
-    'comportamento_incomum_software', 'reinicializacoes_involuntarias'
+    'comportamento_incomum_software', 'reinicializacoes_involuntarias',
+    'tela_azul', 'ausencia_de_audio', 'congelamento_de_tela', 'perda_de_dados',
+    'aplicativos_nao_respondem', 'teclado_nao_funciona', 'mouse_nao_funciona',
+    'leds_piscando', 'barulho_hd_alto', 'imagem_distorcida', 'conexao_lenta',
+    'impossibilidade_imprimir', 'camera_nao_funciona', 'microfone_nao_funciona'
 ]
+
 
 
 def _llm_call(prompt):
@@ -37,13 +42,15 @@ def extrair_sintomas(texto_usuario):
         f"Considere os seguintes sintomas válidos (use apenas exatamente como listados): {', '.join(SINTOMAS_VALIDOS)}.\n\n"
         "Sua tarefa é analisar a mensagem do usuário e identificar quais desses sintomas estão presentes.\n"
         "Para cada sintoma identificado, você deve retornar **exatamente** no formato:\n"
-        "  sintoma('nome_do_sintoma')\n"
+        "    sintoma('nome_do_sintoma')\n"
         "Exemplo: sintoma('travamentos')\n\n"
-        " Não reescreva, resuma ou explique nada. Apenas retorne uma ou mais linhas com os sintomas no formato exato acima.\n\n"
+        "Não reescreva, resuma ou explique nada. Apenas retorne uma ou mais linhas com os sintomas no formato exato acima.\n\n"
         "Se o usuário negar claramente o sintoma mencionado usando termos como 'não', 'nunca', ou 'jamais', retorne apenas:\n"
-        "  negado\n\n"
+        "    negado\n\n"
+        "Se o usuário confirmar claramente o sintoma mencionado usando termos como 'sim', 'exato', 'correto', retorne no formato:\n"
+        "   sintoma('nome_do_sintoma')\n\n"
         "Se não houver menção a nenhum dos sintomas válidos, retorne apenas:\n"
-        "  sintoma('nenhum')\n\n"
+        "    sintoma('nenhum')\n\n"
     )
 
     if ultima_pergunta:
@@ -76,11 +83,13 @@ def descrever_diagnostico(diagnostico):
     """Descreve o diagnóstico para o usuário e sugere soluções."""
     prompt = (
         "Você é um técnico de informática explicando problemas de computador e suas soluções.\n"
-        f"Nomeie e explique o seguinte diagnóstico de forma clara e forneça um breve passo a passo para resolução:\n\n"
+        "Primeiro, apenas nomeie o diagnóstico. Em seguida, explique o diagnóstico de forma clara e forneça um breve passo a passo para resolução:\n\n"
         f"Diagnóstico: '{diagnostico}'\n\n"
-        "Explicação e passos para resolução:")
+        "Formato de Resposta Esperado:\n"
+        "Nome do Diagnóstico: [Nome do Diagnóstico]\n"
+        "Explicação e passos para resolução: [Explicação e passos para resolução]"
+    )
     return _llm_call(prompt)
-
 def get_chat_response(user_input, fatos_anteriores=set()):
     """Obtém a resposta do chat, integrando extração de sintomas e sistema especialista."""
     global ultima_pergunta, sintoma_em_pergunta
