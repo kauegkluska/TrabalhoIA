@@ -1,5 +1,7 @@
 from experta import *
 
+#lista de sintomas válidos
+
 SINTOMAS_VALIDOS = [
     'lentidao_geral', 'travamentos', 'erros_de_arquivo', 'problemas_de_boot',
     'problemas_de_video', 'problemas_de_audio', 'problemas_de_rede',
@@ -27,6 +29,7 @@ class RegrasDiagnostico(KnowledgeEngine):
     def __init__(self):
         super().__init__()
         self.diagnostico_final = None
+        #mapa de sintomas para diagnósticos
         self.regras_sintomas = {
             "Falha Crítica no Disco": {"erros_de_arquivo", "lentidao_geral"},
             "Falha Crítica no Disco (variante)": {"erros_de_arquivo", "ruidos_estranhos", "desligamentos_involuntarios"},
@@ -91,6 +94,8 @@ class RegrasDiagnostico(KnowledgeEngine):
         super().reset()
         self.diagnostico_final = None
         self.fatos_relevantes = {}
+    
+    # método para rodar o motor de inferência com os fatos relevantes
 
     def run_with_facts(self, fatos_dict):
         try:
@@ -108,6 +113,8 @@ class RegrasDiagnostico(KnowledgeEngine):
 
         except Exception as e:
             return f"Erro ao processar as regras: {str(e)}"
+        
+    # método para verificar quais sintomas ainda são necessários para o diagnóstico
 
     def sintomas_necessarios(self):
         pendentes = {}
@@ -119,6 +126,8 @@ class RegrasDiagnostico(KnowledgeEngine):
                 pendentes[diagnostico] = sintomas_faltando
 
         return pendentes
+    
+    # regras 
 
     @Rule(Sintoma(sintoma="lentidao_geral"),
           Sintoma(sintoma="travamentos"))
@@ -288,7 +297,6 @@ class RegrasDiagnostico(KnowledgeEngine):
     def diagnostico_placa_mae_grave(self):
         self.diagnostico_final = "Diagnóstico: Falha grave na placa-mãe."
 
-
     @Rule(Sintoma(sintoma="problemas_de_boot"),
           Sintoma(sintoma="nao_detecta_hd"),
           Sintoma(sintoma="instabilidade_apos_atualizacao"))
@@ -397,7 +405,8 @@ class RegrasDiagnostico(KnowledgeEngine):
           Sintoma(sintoma="instabilidade_apos_atualizacao"))
     def diagnostico_licenca_expirada_grave(self):
         self.diagnostico_final = "Diagnóstico: Licença expirada causando instabilidade e restrições no sistema."
-
+        
+# funcao para avaliar os sintomas e retornar o diagnóstico
 def evaluate_rules(fatos_lista):
     """Avalia os fatos e retorna um diagnóstico ou os sintomas pendentes."""
     fatos_dict = {}
@@ -410,6 +419,7 @@ def evaluate_rules(fatos_lista):
     engine = RegrasDiagnostico()
     return engine.run_with_facts(fatos_dict)
 
+# função para obter os sintomas faltantes para completar diagnósticos e retorna-los
 def get_missing_symptoms(fatos_lista):
     """Retorna os sintomas faltantes para completar diagnósticos."""
     fatos_dict = {}

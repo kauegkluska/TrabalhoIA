@@ -11,6 +11,8 @@ body {
   overflow: hidden;
 }
 
+
+
 h1 {
   text-align: center;
   padding: 24px 0;
@@ -33,6 +35,11 @@ h1 {
   background: #181820;
   scrollbar-width: thin;
   scrollbar-color: #555 transparent;
+}
+
+#logo {
+height: 50px;
+user-select: none;
 }
 
 
