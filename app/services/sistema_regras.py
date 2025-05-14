@@ -4,12 +4,19 @@ SINTOMAS_VALIDOS = [
     'lentidao_geral', 'travamentos', 'erros_de_arquivo', 'problemas_de_boot',
     'problemas_de_video', 'problemas_de_audio', 'problemas_de_rede',
     'superaquecimento', 'ruidos_estranhos', 'desligamentos_involuntarios',
-    'falha_de_componente', 'instabilidade_apos_atualizacao',
+    'instabilidade_apos_atualizacao',
     'comportamento_incomum_software', 'reinicializacoes_involuntarias',
     'tela_azul', 'ausencia_de_audio', 'congelamento_de_tela', 'perda_de_dados',
     'aplicativos_nao_respondem', 'teclado_nao_funciona', 'mouse_nao_funciona',
     'leds_piscando', 'barulho_hd_alto', 'imagem_distorcida', 'conexao_lenta',
-    'impossibilidade_imprimir', 'camera_nao_funciona', 'microfone_nao_funciona'
+    'impossibilidade_imprimir', 'camera_nao_funciona', 'microfone_nao_funciona',
+    'ordem_de_boot_errada', 'nao_detecta_hd', 'conexao_intermittente',
+    'sem_acesso_internet', 'Wifi_nao_funciona',
+    'nao_aparece_redes_wifi_para_se_conectar', 'pendrive_nao_reconhecido',
+    'nao_detecta_dispositivo_usb', 'boot_loop', 'sistema_nao_encontra_disco',
+    'mensagem_de_erro_inicial', 'bloqueio_de_programas_legitimos',
+    'avisos_na_tela', 'desativacao_de_funcionalidades',
+    'restricao_de_configuracoes'
 ]
 
 class Sintoma(Fact):
@@ -46,8 +53,8 @@ class RegrasDiagnostico(KnowledgeEngine):
             "Falha de RAM (Grave)": {"travamentos", "erros_de_arquivo", "lentidao_geral", "tela_azul"},
             "Sistema Operacional Desatualizado": {"instabilidade_apos_atualizacao", "lentidao_geral", "problemas_de_rede"},
             "Sistema Operacional Desatualizado (Grave)": {"instabilidade_apos_atualizacao", "lentidao_geral", "problemas_de_rede", "comportamento_incomum_software"},
-            "BIOS Corrompida": {"problemas_de_boot", "falha_de_componente", "instabilidade_apos_atualizacao"},
-            "BIOS Corrompida (Grave)": {"problemas_de_boot", "falha_de_componente", "instabilidade_apos_atualizacao", "tela_azul"},
+            "BIOS Corrompida": {"problemas_de_boot", "instabilidade_apos_atualizacao"},
+            "BIOS Corrompida (Grave)": {"problemas_de_boot", "instabilidade_apos_atualizacao", "tela_azul"},
             "Problemas de Conectividade": {"problemas_de_rede", "conexao_lenta"},
             "Falha Periféricos": {"teclado_nao_funciona", "mouse_nao_funciona"},
             "Problemas de Impressão": {"impossibilidade_imprimir", "erros_de_arquivo"},
@@ -57,7 +64,26 @@ class RegrasDiagnostico(KnowledgeEngine):
             "Ruídos Excessivos": {"ruidos_estranhos", "barulho_hd_alto"},
             "Problemas de Inicialização": {"problemas_de_boot", "leds_piscando"},
             "Corrupção de Dados": {"erros_de_arquivo", "perda_de_dados"},
-            "Falha de Hardware Genérica": {"falha_de_componente", "desligamentos_involuntarios"}
+            "Falha na Placa-Mãe": {"nao_liga", "sem_som_ou_luz", "leds_piscando"},
+            "Falha na Placa-Mãe (Grave)": {"nao_liga", "sem_som_ou_luz", "leds_piscando", "ventoinhas_paradas"},
+            "Erro de Configuração da BIOS": {"problemas_de_boot", "ordem_de_boot_errada"},
+            "Erro de Configuração da BIOS (Avançado)": {"problemas_de_boot", "nao_detecta_hd", "instabilidade_apos_atualizacao"},
+            "SSD com Problemas de Firmware": {"travamentos", "erros_de_arquivo", "desligamentos_involuntarios"},
+            "SSD com Problemas de Firmware (Grave)": {"travamentos", "erros_de_arquivo", "desligamentos_involuntarios", "perda_de_dados"},
+            "Conflito de IP na Rede": {"problemas_de_rede", "conexao_intermittente", "sem_acesso_internet"},
+            "Conflito de IP na Rede (Persistente)": {"problemas_de_rede", "conexao_intermittente", "sem_acesso_internet", "wifi_nao_funciona"},
+            "Driver de Rede sem Fio com Falha": {"Wifi_nao_funciona", "nao_aparece_redes_wifi_para_se_conectar", "instabilidade_apos_atualizacao"},
+            "Driver de Rede sem Fio com Falha (Grave)": {"Wifi_nao_funciona", "nao_aparece_redes_wifi_para_se_conectar", "problemas_de_rede", "comportamento_incomum_software"},
+            "Porta USB com Falha": {"pendrive_nao_reconhecido", "teclado_nao_funciona", "mouse_nao_funciona"},
+            "Porta USB com Falha (Placa-Mãe)": {"pendrive_nao_reconhecido", "teclado_nao_funciona", "nao_detecta_dispositivo_usb"},
+            "Problemas com Atualização do Windows": {"instabilidade_apos_atualizacao", "tela_azul", "boot_loop"},
+            "Problemas com Atualização do Windows (Crítico)": {"instabilidade_apos_atualizacao", "tela_azul", "boot_loop", "perda_de_dados"},
+            "Erro Pós-Formatação": {"problemas_de_boot", "sistema_nao_encontra_disco", "mensagem_de_erro_inicial"},
+            "Erro Pós-Formatação (Drivers)": {"problemas_de_rede", "Wifi_nao_funciona", "ausencia_de_audio", "camera_nao_funciona"},
+            "Antivírus Bloqueando Sistema": {"comportamento_incomum_software", "aplicativos_nao_respondem", "lentidao_geral"},
+            "Antivírus Bloqueando Sistema (Paranoico)": {"comportamento_incomum_software", "aplicativos_nao_respondem", "lentidao_geral", "bloqueio_de_programas_legitimos"},
+            "Licença do Windows Expirada": {"avisos_na_tela", "desativacao_de_funcionalidades", "comportamento_incomum_software"},
+            "Licença do Windows Expirada (Grave)": {"avisos_na_tela", "comportamento_incomum_software", "restricao_de_configuracoes", "instabilidade_apos_atualizacao"}
         }
         self.fatos_relevantes = {}
 
@@ -136,11 +162,6 @@ class RegrasDiagnostico(KnowledgeEngine):
     def diagnostico_superaquecimento_grave(self):
         self.diagnostico_final = "Diagnóstico: Superaquecimento grave – verifique ventoinhas ou dissipadores."
 
-    @Rule(Sintoma(sintoma="falha_de_componente"),
-          Sintoma(sintoma="problemas_de_boot"))
-    def diagnostico_falha_hardware_boot(self):
-        self.diagnostico_final = "Diagnóstico: Falha de hardware impactando o processo de boot."
-
     @Rule(Sintoma(sintoma="comportamento_incomum_software"),
           Sintoma(sintoma="lentidao_geral"))
     def diagnostico_malware(self):
@@ -163,7 +184,6 @@ class RegrasDiagnostico(KnowledgeEngine):
         self.diagnostico_final = "Diagnóstico: Falhas em módulos de memória RAM."
 
     @Rule(Sintoma(sintoma="problemas_de_boot"),
-          Sintoma(sintoma="falha_de_componente"),
           Sintoma(sintoma="instabilidade_apos_atualizacao"))
     def diagnostico_bios_corrompida(self):
         self.diagnostico_final = "Diagnóstico: Possível corrupção de BIOS ou firmware."
@@ -231,11 +251,6 @@ class RegrasDiagnostico(KnowledgeEngine):
     def diagnostico_corrupcao_dados(self):
         self.diagnostico_final = "Diagnóstico: Corrupção de dados ou perda de arquivos."
 
-    @Rule(Sintoma(sintoma="falha_de_componente"),
-          Sintoma(sintoma="desligamentos_involuntarios"))
-    def diagnostico_falha_hardware_generica(self):
-        self.diagnostico_final = "Diagnóstico: Falha genérica de hardware."
-
     @Rule(Sintoma(sintoma="erros_de_arquivo"),
           Sintoma(sintoma="lentidao_geral"),
           Sintoma(sintoma="perda_de_dados"))
@@ -259,6 +274,129 @@ class RegrasDiagnostico(KnowledgeEngine):
           Sintoma(sintoma="perda_de_dados"))
     def diagnostico_memoria_falha_grave(self):
         self.diagnostico_final = "Diagnóstico: Falhas em módulos de memória RAM."
+
+    @Rule(Sintoma(sintoma="nao_liga"),
+          Sintoma(sintoma="sem_som_ou_luz"),
+          Sintoma(sintoma="leds_piscando"))
+    def diagnostico_placa_mae(self):
+        self.diagnostico_final = "Diagnóstico: Falha na placa-mãe."
+
+    @Rule(Sintoma(sintoma="nao_liga"),
+          Sintoma(sintoma="sem_som_ou_luz"),
+          Sintoma(sintoma="leds_piscando"),
+          Sintoma(sintoma="ventoinhas_paradas"))
+    def diagnostico_placa_mae_grave(self):
+        self.diagnostico_final = "Diagnóstico: Falha grave na placa-mãe."
+
+
+    @Rule(Sintoma(sintoma="problemas_de_boot"),
+          Sintoma(sintoma="nao_detecta_hd"),
+          Sintoma(sintoma="instabilidade_apos_atualizacao"))
+    def diagnostico_bios_configuracao_grave(self):
+        self.diagnostico_final = "Diagnóstico: Configuração incorreta ou corrompida da BIOS."
+
+    @Rule(Sintoma(sintoma="travamentos"),
+          Sintoma(sintoma="erros_de_arquivo"),
+          Sintoma(sintoma="desligamentos_involuntarios"))
+    def diagnostico_firmware_ssd(self):
+        self.diagnostico_final = "Diagnóstico: Problemas de firmware no SSD."
+
+    @Rule(Sintoma(sintoma="travamentos"),
+          Sintoma(sintoma="erros_de_arquivo"),
+          Sintoma(sintoma="desligamentos_involuntarios"),
+          Sintoma(sintoma="perda_de_dados"))
+    def diagnostico_firmware_ssd_grave(self):
+        self.diagnostico_final = "Diagnóstico: Falha grave no firmware do SSD."
+
+    @Rule(Sintoma(sintoma="problemas_de_rede"),
+          Sintoma(sintoma="conexao_intermittente"),
+          Sintoma(sintoma="sem_acesso_internet"))
+    def diagnostico_conflito_ip(self):
+        self.diagnostico_final = "Diagnóstico: Conflito de IP na rede."
+
+    @Rule(Sintoma(sintoma="problemas_de_rede"),
+          Sintoma(sintoma="conexao_intermittente"),
+          Sintoma(sintoma="sem_acesso_internet"),
+          Sintoma(sintoma="Wifi_nao_funciona"))
+    def diagnostico_conflito_ip_persistente(self):
+        self.diagnostico_final = "Diagnóstico: Conflito de IP persistente afetando conexão."
+
+    @Rule(Sintoma(sintoma="Wifi_nao_funciona"),
+          Sintoma(sintoma="nao_aparece_redes_wifi_para_se_conectar"),
+          Sintoma(sintoma="instabilidade_apos_atualizacao"))
+    def diagnostico_driver_wifi(self):
+        self.diagnostico_final = "Diagnóstico: Falha no driver de rede sem fio."
+
+    @Rule(Sintoma(sintoma="Wifi_nao_funciona"),
+          Sintoma(sintoma="nao_aparece_redes_wifi_para_se_conectar"),
+          Sintoma(sintoma="problemas_de_rede"),
+          Sintoma(sintoma="comportamento_incomum_software"))
+    def diagnostico_driver_wifi_grave(self):
+        self.diagnostico_final = "Diagnóstico: Falha grave no driver de rede sem fio."
+
+    @Rule(Sintoma(sintoma="pendrive_nao_reconhecido"),
+          Sintoma(sintoma="teclado_nao_funciona"),
+          Sintoma(sintoma="mouse_nao_funciona"))
+    def diagnostico_usb_falha(self):
+        self.diagnostico_final = "Diagnóstico: Portas USB com falha."
+
+    @Rule(Sintoma(sintoma="pendrive_nao_reconhecido"),
+          Sintoma(sintoma="teclado_nao_funciona"),
+          Sintoma(sintoma="nao_detecta_dispositivo_usb"))
+    def diagnostico_usb_placa_mae(self):
+        self.diagnostico_final = "Diagnóstico: Falha na controladora USB da placa-mãe."
+
+    @Rule(Sintoma(sintoma="instabilidade_apos_atualizacao"),
+          Sintoma(sintoma="tela_azul"),
+          Sintoma(sintoma="boot_loop"))
+    def diagnostico_windows_update(self):
+        self.diagnostico_final = "Diagnóstico: Problemas após atualização do Windows."
+
+    @Rule(Sintoma(sintoma="instabilidade_apos_atualizacao"),
+          Sintoma(sintoma="tela_azul"),
+          Sintoma(sintoma="boot_loop"),
+          Sintoma(sintoma="perda_de_dados"))
+    def diagnostico_windows_update_grave(self):
+        self.diagnostico_final = "Diagnóstico: Atualização crítica do Windows causou falhas graves."
+
+    @Rule(Sintoma(sintoma="problemas_de_boot"),
+          Sintoma(sintoma="sistema_nao_encontra_disco"),
+          Sintoma(sintoma="mensagem_de_erro_inicial"))
+    def diagnostico_erro_formatacao(self):
+        self.diagnostico_final = "Diagnóstico: Erro de configuração após formatação."
+
+    @Rule(Sintoma(sintoma="problemas_de_rede"),
+          Sintoma(sintoma="Wifi_nao_funciona"),
+          Sintoma(sintoma="ausencia_de_audio"),
+          Sintoma(sintoma="camera_nao_funciona"))
+    def diagnostico_drivers_pos_formatacao(self):
+        self.diagnostico_final = "Diagnóstico: Drivers ausentes após formatação."
+
+    @Rule(Sintoma(sintoma="comportamento_incomum_software"),
+          Sintoma(sintoma="aplicativos_nao_respondem"),
+          Sintoma(sintoma="lentidao_geral"))
+    def diagnostico_antivirus_bloqueando(self):
+        self.diagnostico_final = "Diagnóstico: Antivírus está interferindo no funcionamento do sistema."
+
+    @Rule(Sintoma(sintoma="comportamento_incomum_software"),
+          Sintoma(sintoma="aplicativos_nao_respondem"),
+          Sintoma(sintoma="lentidao_geral"),
+          Sintoma(sintoma="bloqueio_de_programas_legitimos"))
+    def diagnostico_antivirus_paranoico(self):
+        self.diagnostico_final = "Diagnóstico: Antivírus excessivamente restritivo bloqueando processos legítimos."
+
+    @Rule(Sintoma(sintoma="avisos_na_tela"),
+          Sintoma(sintoma="desativacao_de_funcionalidades"),
+          Sintoma(sintoma="comportamento_incomum_software"))
+    def diagnostico_licenca_expirada(self):
+        self.diagnostico_final = "Diagnóstico: Licença do Windows expirada."
+
+    @Rule(Sintoma(sintoma="avisos_na_tela"),
+          Sintoma(sintoma="comportamento_incomum_software"),
+          Sintoma(sintoma="restricao_de_configuracoes"),
+          Sintoma(sintoma="instabilidade_apos_atualizacao"))
+    def diagnostico_licenca_expirada_grave(self):
+        self.diagnostico_final = "Diagnóstico: Licença expirada causando instabilidade e restrições no sistema."
 
 def evaluate_rules(fatos_lista):
     """Avalia os fatos e retorna um diagnóstico ou os sintomas pendentes."""

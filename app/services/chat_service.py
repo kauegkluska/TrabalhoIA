@@ -15,12 +15,19 @@ SINTOMAS_VALIDOS = [
     'lentidao_geral', 'travamentos', 'erros_de_arquivo', 'problemas_de_boot',
     'problemas_de_video', 'problemas_de_audio', 'problemas_de_rede',
     'superaquecimento', 'ruidos_estranhos', 'desligamentos_involuntarios',
-    'falha_de_componente', 'instabilidade_apos_atualizacao',
+    'instabilidade_apos_atualizacao',
     'comportamento_incomum_software', 'reinicializacoes_involuntarias',
     'tela_azul', 'ausencia_de_audio', 'congelamento_de_tela', 'perda_de_dados',
     'aplicativos_nao_respondem', 'teclado_nao_funciona', 'mouse_nao_funciona',
     'leds_piscando', 'barulho_hd_alto', 'imagem_distorcida', 'conexao_lenta',
-    'impossibilidade_imprimir', 'camera_nao_funciona', 'microfone_nao_funciona'
+    'impossibilidade_imprimir', 'camera_nao_funciona', 'microfone_nao_funciona',
+    'ordem_de_boot_errada', 'nao_detecta_hd', 'conexao_intermittente',
+    'sem_acesso_internet', 'Wifi_nao_funciona',
+    'nao_aparece_redes_wifi_para_se_conectar', 'pendrive_nao_reconhecido',
+    'nao_detecta_dispositivo_usb', 'boot_loop', 'sistema_nao_encontra_disco',
+    'mensagem_de_erro_inicial', 'bloqueio_de_programas_legitimos',
+    'avisos_na_tela', 'desativacao_de_funcionalidades',
+    'restricao_de_configuracoes'
 ]
 
 
@@ -57,7 +64,7 @@ def extrair_sintomas(texto_usuario):
         prompt += f"Considere que a pergunta anterior foi: '{ultima_pergunta}' e o sintoma na pergunta foi '{sintoma_em_pergunta}'.\n\n"
 
     prompt += f"Mensagem do usuário: '{texto_usuario}'\n\n"
-    prompt += "⚠️ Saída obrigatória: uma ou mais linhas com o formato sintoma('nome_do_sintoma'), ou uma única linha com 'negado' ou sintoma('nenhum').\n"
+    prompt += "Saída obrigatória: uma ou mais linhas com o formato sintoma('nome_do_sintoma'), ou uma única linha com 'negado' ou sintoma('nenhum').\n"
     prompt += "Não inclua explicações ou qualquer outro conteúdo.\n\n"
     prompt += "Sintomas extraídos:"
 
