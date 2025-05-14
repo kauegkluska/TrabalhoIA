@@ -45,7 +45,7 @@ def extrair_sintomas(texto_usuario):
         "    sintoma('nome_do_sintoma')\n"
         "Exemplo: sintoma('travamentos')\n\n"
         "Não reescreva, resuma ou explique nada. Apenas retorne uma ou mais linhas com os sintomas no formato exato acima.\n\n"
-        "Se o usuário negar claramente o sintoma mencionado usando termos como 'não', 'nunca', ou 'jamais', retorne apenas:\n"
+        "Se o usuário negar claramente o a pergunta e o sintoma mencionado usando termos como 'não', 'nunca', ou 'jamais', retorne apenas:\n"
         "    negado\n\n"
         "Se o usuário confirmar claramente o sintoma mencionado usando termos como 'sim', 'exato', 'correto', retorne no formato:\n"
         "   sintoma('nome_do_sintoma')\n\n"

@@ -179,18 +179,6 @@ class RegrasDiagnostico(KnowledgeEngine):
     def diagnostico_fonte_inestavel(self):
         self.diagnostico_final = "Diagnóstico: Fonte de energia instável pode estar causando falhas no boot."
 
-    @Rule(Sintoma(sintoma="problemas_de_audio"))
-    def diagnostico_audio_simples(self):
-        self.diagnostico_final = "Diagnóstico: Problemas com a saída ou driver de áudio."
-
-    @Rule(Sintoma(sintoma="problemas_de_video"))
-    def diagnostico_video_simples(self):
-        self.diagnostico_final = "Diagnóstico: Problemas com a saída de vídeo ou driver gráfico."
-
-    @Rule(Sintoma(sintoma="problemas_de_rede"))
-    def diagnostico_rede_simples(self):
-        self.diagnostico_final = "Diagnóstico: Problemas com a conexão de rede (Wi-Fi ou Ethernet)."
-
     @Rule(Sintoma(sintoma="instabilidade_apos_atualizacao"))
     def diagnostico_atualizacao_simples(self):
         self.diagnostico_final = "Diagnóstico: Instabilidade do sistema após uma atualização de software."
