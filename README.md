@@ -70,6 +70,8 @@ pip install -r requirements.txt
 
 ---
 
+#### ⚠️ Além disso é necessario a criação de um arquivo.env, onde chave referente a OpenAI sera usada.
+
 ## 2 - Enviar alterações para o repositório remoto
 
 ### Etapas para enviar alterações locais ao GitHub:
