@@ -68,11 +68,11 @@ document.getElementById('go-home').onclick = () => {
 
 
 // Envia a mensagem de duvidas frequentes automaticamente
-/*document.querySelectorAll(".faq li").forEach((item) => {
+document.querySelectorAll(".faq li").forEach((item) => {
   item.addEventListener("click", () => {
     const faqQuestion = item.textContent.trim();
     input.value = faqQuestion;
     form.dispatchEvent(new Event("submit")); // Envia como se fosse uma mensagem
   });
-});
-*/
+}); 
+
